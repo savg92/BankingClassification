@@ -22,7 +22,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Phase 4: Quality Assurance
 - [ ] **Track: Comprehensive Testing and E2E Validation**
-  *Description: Implement unit, integration, and E2E tests (Playwright) to verify system integrity and business logic (e.g., <30% warnings).*
+  *Link: [./tracks/testing_qa_20260429/](./tracks/testing_qa_20260429/)*
 
 ## Phase 5: Delivery
 - [ ] **Track: Documentation and Deployment Readiness**
