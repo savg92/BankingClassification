@@ -18,7 +18,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Phase 3: Frontend Development
 - [ ] **Track: Interactive Dashboard and UI**
-  *Description: Develop the React dashboard with Shadcn UI, featuring real-time analysis input and conditional uncertainty alerts.*
+  *Link: [./tracks/frontend_ui_20260429/](./tracks/frontend_ui_20260429/)*
 
 ## Phase 4: Quality Assurance
 - [ ] **Track: Comprehensive Testing and E2E Validation**
