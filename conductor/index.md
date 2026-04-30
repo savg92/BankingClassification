@@ -7,6 +7,7 @@
 
 ## Workflow
 - [Workflow](./workflow.md)
+- [Master Plan](./plan.md)
 - [Code Style Guides](./code_styleguides/)
 
 ## Management
