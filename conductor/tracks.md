@@ -14,7 +14,7 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ## Phase 2: Backend Development
 - [ ] **Track: Backend API and Inference Logic**
-  *Description: Build the FastAPI service, integrate LiteLLM for real-time embeddings, and implement parallel model inference with confidence flagging.*
+  *Link: [./tracks/backend_api_20260429/](./tracks/backend_api_20260429/)*
 
 ## Phase 3: Frontend Development
 - [ ] **Track: Interactive Dashboard and UI**
