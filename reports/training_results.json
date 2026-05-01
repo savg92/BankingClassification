@@ -1,0 +1,166 @@
+{
+  "metrics": [
+    {
+      "accuracy": 0.35,
+      "dropout": 0.2,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.2,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.37,
+      "dropout": 0.2,
+      "f1_weighted": 0.34,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.63,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.37,
+      "dropout": 0.2,
+      "f1_weighted": 0.34,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.63,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.2,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.2,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.3,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.3,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.355,
+      "dropout": 0.3,
+      "f1_weighted": 0.325,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.645,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.355,
+      "dropout": 0.3,
+      "f1_weighted": 0.325,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.645,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.3,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.3,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.001,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0005,
+      "loss": 0.65,
+      "name": "sentiment"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "intent"
+    },
+    {
+      "accuracy": 0.35,
+      "dropout": 0.4,
+      "f1_weighted": 0.32,
+      "hidden_size": 1024,
+      "learning_rate": 0.0001,
+      "loss": 0.65,
+      "name": "sentiment"
+    }
+  ]
+}

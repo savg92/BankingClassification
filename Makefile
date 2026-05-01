@@ -3,7 +3,8 @@
 #
 # Usage:
 #   make help              - Show all available targets
-#   make setup             - Complete project setup (Python + Frontend)
+#   make setup             - Complete project setup (dependencies + env)
+#   make install-deps      - Install Python and frontend dependencies
 #   make train             - Run model training pipeline
 #   make backend-dev       - Start backend API in development mode
 #   make frontend-dev      - Start frontend in development mode
@@ -18,7 +19,7 @@
 #   make docker-down       - Stop services
 #   make clean             - Clean build artifacts and caches
 
-.PHONY: help setup train backend-dev frontend-dev test test-backend test-frontend coverage lint format docker-build docker-up docker-down clean
+.PHONY: help setup install-deps setup-python setup-frontend train backend-dev frontend-dev test test-backend test-frontend coverage lint format docker-build docker-up docker-down clean
 
 # Default shell
 SHELL := /bin/bash
@@ -62,7 +63,8 @@ help:
 	@echo "==========================================$(NC)"
 	@echo ""
 	@echo "$(GREEN)Setup & Installation:$(NC)"
-	@echo "  make setup              - Complete project setup (Python + Frontend)"
+	@echo "  make setup              - Complete project setup (dependencies + env)"
+	@echo "  make install-deps       - Install Python and frontend dependencies"
 	@echo "  make setup-python       - Setup Python environment with uv"
 	@echo "  make setup-frontend     - Setup Frontend with bun"
 	@echo ""
@@ -100,7 +102,9 @@ help:
 # SETUP & INSTALLATION
 # ============================================================================
 
-setup: setup-python setup-frontend env-template
+install-deps: setup-python setup-frontend
+
+setup: install-deps env-template
 	@echo "$(GREEN)✓ Project setup complete!$(NC)"
 	@echo ""
 	@echo "$(YELLOW)Next steps:$(NC)"

@@ -1,0 +1,19 @@
+[project]
+name = "banking-classification"
+version = "0.1.0"
+description = "Dual-Prediction Hybrid Text Classification System"
+requires-python = ">=3.13"
+dependencies = []
+
+[tool.uv.workspace]
+members = [
+    "apps/backend",
+    "training",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
+]

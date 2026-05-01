@@ -1,0 +1,1 @@
+"""Application workspace package marker."""
