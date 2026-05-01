@@ -3,6 +3,7 @@
 This document summarizes key rules and best practices from the Google HTML/CSS Style Guide.
 
 ## 1. General Rules
+
 - **Protocol:** Use HTTPS for all embedded resources.
 - **Indentation:** Indent by 2 spaces. Do not use tabs.
 - **Capitalization:** Use only lowercase for all code (element names, attributes, selectors, properties).
@@ -10,6 +11,7 @@ This document summarizes key rules and best practices from the Google HTML/CSS S
 - **Encoding:** Use UTF-8 (without a BOM). Specify `<meta charset="utf-8">` in HTML.
 
 ## 2. HTML Style Rules
+
 - **Document Type:** Use `<!doctype html>`.
 - **HTML Validity:** Use valid HTML.
 - **Semantics:** Use HTML elements according to their intended purpose (e.g., use `<p>` for paragraphs, not for spacing).
@@ -18,10 +20,12 @@ This document summarizes key rules and best practices from the Google HTML/CSS S
 - **`type` Attributes:** Omit `type` attributes for stylesheets (`<link>`) and scripts (`<script>`).
 
 ## 3. HTML Formatting Rules
+
 - **General:** Use a new line for every block, list, or table element, and indent its children.
 - **Quotation Marks:** Use double quotation marks (`""`) for attribute values.
 
 ## 4. CSS Style Rules
+
 - **CSS Validity:** Use valid CSS.
 - **Class Naming:** Use meaningful, generic names. Separate words with a hyphen (`-`).
   - **Good:** `.video-player`, `.site-navigation`
@@ -34,6 +38,7 @@ This document summarizes key rules and best practices from the Google HTML/CSS S
 - **`!important`:** Avoid using `!important`.
 
 ## 5. CSS Formatting Rules
+
 - **Declaration Order:** Alphabetize declarations within a rule.
 - **Indentation:** Indent all block content.
 - **Semicolons:** Use a semicolon after every declaration.
@@ -44,6 +49,23 @@ This document summarizes key rules and best practices from the Google HTML/CSS S
 - **Rule Separation:** Separate rules with a new line.
 - **Quotation Marks:** Use single quotes (`''`) for attribute selectors and property values (e.g., `[type='text']`).
 
+## 6. Shadcn UI Customization
+
+- **Theme Config**: Define color overrides in `tailwind.config.ts` under `extend.colors`.
+- **Banking Theme**: Use blue (`#0066cc`) and white with high-contrast text (`#1a1a1a`).
+- **Alert Variants**: Use `variant="destructive"` for warnings (red), default for info.
+- **Component Props**: Never override props passed to Shadcn components. Create wrapper components instead.
+
+## 7. Accessibility (A11y)
+
+- **High Contrast**: Ensure WCAG AA compliance (4.5:1 ratio for text).
+- **ARIA Labels**: Add `aria-label` to buttons and interactive elements without visible text.
+- **Semantic HTML**: Use `<button>`, `<form>`, `<table>` elements correctly.
+- **Testing**: Run Axe accessibility scan in CI:
+  ```bash
+  npm run test:a11y
+  ```
+
 **BE CONSISTENT.** When editing code, match the existing style.
 
-*Source: [Google HTML/CSS Style Guide](https://google.github.io/styleguide/htmlcssguide.html)*
+_Source: [Google HTML/CSS Style Guide](https://google.github.io/styleguide/htmlcssguide.html)_
