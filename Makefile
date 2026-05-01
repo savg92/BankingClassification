@@ -25,8 +25,8 @@
 SHELL := /bin/bash
 
 # Python executable (using uv venv)
-PYTHON := ./venv/bin/python
-PIP := ./venv/bin/pip
+PYTHON := ./.venv/bin/python
+PIP := ./.venv/bin/pip
 UV := uv
 
 # Node/Bun executables
@@ -161,11 +161,11 @@ env-template:
 
 train:
 	@echo "$(BLUE)Running model training pipeline...$(NC)"
-	@cd $(TRAINING_DIR) && $(PYTHON) -m jupyter notebook --NotebookApp.token='' --NotebookApp.password=''
+	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py
 
 backend-dev:
 	@echo "$(BLUE)Starting backend API (http://localhost:8000)...$(NC)"
-	@cd $(BACKEND_DIR) && $(UV) run fastapi dev main.py
+	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run uvicorn apps.backend.main:app --reload --host 0.0.0.0 --port 8000
 
 frontend-dev:
 	@echo "$(BLUE)Starting frontend dev server (http://localhost:5173)...$(NC)"
@@ -190,9 +190,9 @@ test: test-backend test-frontend test-e2e
 
 test-backend:
 	@echo "$(BLUE)Running backend tests (pytest)...$(NC)"
-	@cd $(BACKEND_DIR) && $(UV) run pytest -v --cov=. --cov-report=html --cov-report=term
+	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run pytest -v apps/backend/tests --cov=apps/backend --cov-report=html --cov-report=term
 	@echo "$(GREEN)✓ Backend tests passed$(NC)"
-	@echo "Coverage report: $(BACKEND_DIR)/htmlcov/index.html"
+	@echo "Coverage report: apps/backend/htmlcov/index.html"
 
 test-frontend:
 	@echo "$(BLUE)Running frontend tests (vitest)...$(NC)"
@@ -207,8 +207,8 @@ test-e2e:
 coverage:
 	@echo "$(BLUE)Generating coverage reports...$(NC)"
 	@echo "$(YELLOW)Backend coverage:$(NC)"
-	@cd $(BACKEND_DIR) && $(UV) run pytest --cov=. --cov-report=html
-	@echo "  Report: $(BACKEND_DIR)/htmlcov/index.html"
+	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run pytest apps/backend --cov=apps/backend --cov-report=html
+	@echo "  Report: apps/backend/htmlcov/index.html"
 	@echo ""
 	@echo "$(YELLOW)Frontend coverage:$(NC)"
 	@cd $(FRONTEND_DIR) && $(BUN) run test:coverage
