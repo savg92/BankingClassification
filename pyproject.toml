@@ -3,7 +3,14 @@ name = "banking-classification"
 version = "0.1.0"
 description = "Dual-Prediction Hybrid Text Classification System"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "fastapi>=0.136.1",
+    "uvicorn>=0.46.0",
+    "litellm>=1.28.0",
+    "datasets>=3.0.0",
+    "torch>=2.1.0",
+    "numpy>=1.24.0",
+]
 
 [tool.uv.workspace]
 members = [

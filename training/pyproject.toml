@@ -2,4 +2,8 @@
 name = "banking-training"
 version = "0.1.0"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "datasets>=3.0.0",
+    "torch>=2.1.0",
+    "numpy>=1.24.0",
+]

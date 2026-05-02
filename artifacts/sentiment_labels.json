@@ -1,27 +1,9 @@
 {
   "labels": [
-    "sentiment_01",
-    "sentiment_02",
-    "sentiment_03",
-    "sentiment_04",
-    "sentiment_05",
-    "sentiment_06",
-    "sentiment_07",
-    "sentiment_08",
-    "sentiment_09",
-    "sentiment_10",
-    "sentiment_11",
-    "sentiment_12",
-    "sentiment_13",
-    "sentiment_14",
-    "sentiment_15",
-    "sentiment_16",
-    "sentiment_17",
-    "sentiment_18",
-    "sentiment_19",
-    "sentiment_20",
-    "sentiment_21",
-    "sentiment_22",
-    "sentiment_23"
+    "joy",
+    "anger",
+    "fear",
+    "sadness",
+    "neutral"
   ]
 }

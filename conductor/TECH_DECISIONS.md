@@ -56,6 +56,14 @@ This document provides the rationale for each technology choice in the project, 
 - **Async Support**: Native async/await for parallel inference.
 - **Standard Library**: Works with standard Python tools (pytest, etc.).
 
+**Implementation Details:**
+
+- **App Location**: `apps/backend/app/main.py` (entry point)
+- **Endpoints**:
+  - `/health` - Service status check
+  - `/analyze` - Accept text payload and return embedding + prediction results
+- **CORS**: Enabled for local frontend development (Vite localhost:5173)
+
 ---
 
 ### **PyTorch** (Deep Learning Framework)
@@ -128,7 +136,7 @@ device = torch.device(
 
 ---
 
-### **Dataset Caching**
+### **Dataset Caching & Training Pipeline**
 
 **Decision:** Cache preprocessed datasets locally to avoid repeated embedding extraction.
 
@@ -138,11 +146,33 @@ device = torch.device(
 - **Consistency**: Same embeddings for all hyperparameter configurations.
 - **Development**: Faster iteration when tweaking model architecture.
 
-**Implementation:**
+**Training Datasets:**
 
-- Store preprocessed tensors in `/training/cache/banking77_embeddings.pt`
+- **Banking Intent**: `mteb/banking77` (77 banking-related intent classes)
+- **Sentiment**: `go_emotions` (emotion classification dataset)
+
+**Preprocessing Pipeline:**
+
+- **Normalization**: Clean text data (lowercase, special characters)
+- **Tokenization**: Break text into tokens
+- **Padding**: Pad sequences to 128 tokens (fixed length)
+- **Embedding**: Fetch 768-dim vectors via LiteLLM-compatible provider
+
+**Caching Implementation:**
+
+- Store preprocessed tensors in `/training/cache/`
 - Hash text inputs to detect changes
 - Regenerate cache if dataset changes
+- Cache persists across training runs
+
+**Artifact Export:**
+
+- **Model Weights**: Export trained `.pth` files
+  - Intent model: `artifacts/intent_model.pth`
+  - Sentiment model: `artifacts/sentiment_model.pth`
+- **Labels**: Export class labels as `.json`
+  - Intent labels: `artifacts/intent_labels.json`
+  - Sentiment labels: `artifacts/sentiment_labels.json`
 
 ---
 
@@ -297,6 +327,63 @@ vs Redux:
 - **Security**: Mitigate DDoS-style attacks.
 
 **Implementation:** Use `slowapi` or `starlette-limiter` middleware in FastAPI.
+
+---
+
+## Configuration & Validation
+
+### **LiteLLM Provider Connectivity**
+
+**Critical Requirement:** Training and inference require live embedding provider connectivity.
+
+**Configuration:**
+
+1. Configure `.env` with reachable provider details:
+
+   ```bash
+   LITELLM_API_BASE=http://localhost:1234/v1      # LM Studio default
+   LITELLM_MODEL=qwen:0.6b                         # Model name
+   LITELLM_API_KEY=<key_if_required>               # Optional (not needed for local)
+   ```
+
+2. Ensure provider is running before executing:
+   - Training: `make train`
+   - Inference: `make backend-dev` or `make dev`
+
+**Fallback Chain:**
+
+1. LM Studio (http://localhost:1234/v1) - Primary
+2. Ollama (http://localhost:11434/api/embeddings) - Secondary
+3. OpenRouter (cloud) - Fallback
+
+### **Validation Commands**
+
+**Backend Testing:**
+
+```bash
+uv run pytest -q              # Quick test run
+uv run pytest --cov=app       # With coverage report
+```
+
+**Frontend Testing:**
+
+```bash
+cd apps/frontend && bun run test           # Unit tests
+cd apps/frontend && bun run test:e2e       # E2E tests
+cd apps/frontend && bun run test:coverage  # Coverage report
+```
+
+**Frontend Build:**
+
+```bash
+cd apps/frontend && bun run build          # Production build
+```
+
+**End-to-End Development:**
+
+```bash
+make dev                      # Start backend (8000) + frontend (5173) concurrently
+```
 
 ---
 

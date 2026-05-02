@@ -6,6 +6,8 @@
 #   make setup             - Complete project setup (dependencies + env)
 #   make install-deps      - Install Python and frontend dependencies
 #   make train             - Run model training pipeline
+#   make train-intent      - Train only intent model (Banking77)
+#   make train-sentiment   - Train only sentiment model (GoEmotions)
 #   make backend-dev       - Start backend API in development mode
 #   make frontend-dev      - Start frontend in development mode
 #   make test              - Run all tests (backend + frontend)
@@ -19,7 +21,7 @@
 #   make docker-down       - Stop services
 #   make clean             - Clean build artifacts and caches
 
-.PHONY: help setup install-deps setup-python setup-frontend train backend-dev frontend-dev test test-backend test-frontend coverage lint format docker-build docker-up docker-down clean
+.PHONY: help setup install-deps setup-python setup-frontend train train-intent train-sentiment train-slice backend-dev frontend-dev test test-backend test-frontend coverage lint format docker-build docker-up docker-down clean
 
 # Default shell
 SHELL := /bin/bash
@@ -70,6 +72,9 @@ help:
 	@echo ""
 	@echo "$(GREEN)Development:$(NC)"
 	@echo "  make train              - Run model training pipeline"
+	@echo "  make train-intent       - Train only intent model (mteb/banking77)"
+	@echo "  make train-sentiment    - Train only sentiment model (go_emotions)"
+	@echo "  make train-slice N=500  - Run quick slice with limited samples"
 	@echo "  make backend-dev        - Start backend API (http://localhost:8000)"
 	@echo "  make frontend-dev       - Start frontend (http://localhost:5173)"
 	@echo "  make dev                - Run backend and frontend concurrently"
@@ -162,6 +167,18 @@ env-template:
 train:
 	@echo "$(BLUE)Running model training pipeline...$(NC)"
 	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py
+
+train-intent:
+	@echo "$(BLUE)Running intent-only training (mteb/banking77)...$(NC)"
+	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py --target intent
+
+train-sentiment:
+	@echo "$(BLUE)Running sentiment-only training (go_emotions)...$(NC)"
+	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py --target sentiment
+
+train-slice:
+	@echo "$(BLUE)Running quick training slice (TRAIN_SLICE=${N:-500})...$(NC)"
+	@TRAIN_SLICE=${N:-500} PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py
 
 backend-dev:
 	@echo "$(BLUE)Starting backend API (http://localhost:8000)...$(NC)"

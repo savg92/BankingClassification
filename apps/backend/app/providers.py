@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import logging
 from hashlib import sha256
 from typing import Protocol
 
 from banking_classification.vector import EMBEDDING_DIMENSION, embed_text
+
+logger = logging.getLogger(__name__)
 
 
 class EmbeddingProvider(Protocol):
@@ -30,8 +33,13 @@ class LiteLLMEmbeddingProvider:
                 api_key=self.api_key,
             )
             data = response["data"][0]["embedding"]
+            logger.info(f"✓ Real embedding from {self.model} at {self.api_base}")
             return [float(value) for value in data]
-        except Exception:
+        except ImportError as e:
+            logger.error(f"✗ LiteLLM import failed: {e}. Falling back to deterministic embeddings.")
+            return embed_text(text, dimension=EMBEDDING_DIMENSION)
+        except Exception as e:
+            logger.error(f"✗ LiteLLM embedding failed ({self.api_base}): {type(e).__name__}: {e}. Falling back to deterministic embeddings.")
             return embed_text(text, dimension=EMBEDDING_DIMENSION)
 
 

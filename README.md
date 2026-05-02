@@ -2,13 +2,13 @@
 
 Dual-prediction hybrid text classification system for banking intent and user sentiment analysis.
 
-This repository is a full monorepo with training, inference, and dashboard layers, plus shared utilities and planning docs. The current implementation uses deterministic fallbacks so the project runs reliably in local/dev environments even when external ML services are unavailable.
+This repository is a full monorepo with training, inference, and dashboard layers, plus shared utilities and planning docs.
 
 ## What’s inside
 
 - `apps/backend` — FastAPI inference gateway with `/health` and `/analyze`
 - `apps/frontend` — React + Vite dashboard with tabs, result cards, warnings, and history
-- `training` — deterministic training pipeline, artifact export, and report generation
+- `training` — dataset-driven training pipeline, artifact export, and report generation
 - `banking_classification/` — shared utilities for text processing, embeddings, prediction ranking, and artifact loading
 - `conductor/` — project plans, execution tracks, and workflow guidance
 - `ARCHITECTURE.md` — system architecture and data flow overview
@@ -18,14 +18,14 @@ This repository is a full monorepo with training, inference, and dashboard layer
 
 - **Backend**: FastAPI service that accepts text input, fetches an embedding, runs dual inference, and returns top-5 predictions with warning flags.
 - **Frontend**: Analyst dashboard for entering customer text, reviewing intent/sentiment predictions, and viewing low-confidence alerts.
-- **Training**: Deterministic training/export pipeline that produces model artifacts and report files under `artifacts/` and `reports/`.
-- **Shared core**: Reusable logic for normalization, token shaping, deterministic embeddings, softmax ranking, and artifact persistence.
+- **Training**: Training/export pipeline that pulls `mteb/banking77` + `go_emotions`, produces artifacts, and writes reports under `artifacts/` and `reports/`.
+- **Shared core**: Reusable logic for normalization, token shaping, softmax ranking, and artifact persistence.
 
 ## Architecture summary
 
 1. A user enters banking-related text in the React dashboard.
 2. The frontend sends the text to `POST /analyze`.
-3. The backend derives a 768-dimension embedding using LiteLLM when available, or a deterministic fallback when not.
+3. The backend derives a 768-dimension embedding using LiteLLM-compatible providers.
 4. Intent and sentiment classifiers run in parallel.
 5. The API returns top-5 predictions, probabilities, the embedding, and confidence warning flags.
 6. The frontend renders the results, stores recent analyses locally, and exposes a history view for recall.
@@ -94,7 +94,10 @@ Copy `.env.example` to `.env` or edit the existing `.env` file to suit your envi
 - `make backend-dev` — run the FastAPI server
 - `make frontend-dev` — run the React dev server
 - `make dev` — run both services together
-- `make train` — execute the training pipeline
+- `make train` — execute the dual training pipeline
+- `make train-intent` — train only intent model from `mteb/banking77`
+- `make train-sentiment` — train only sentiment model from `go_emotions`
+- `make train-slice N=500` — run a quick local slice
 
 ### Validation
 
@@ -143,7 +146,7 @@ Verified in this repository:
 ## Design notes
 
 - Text normalization strips punctuation, normalizes Unicode, and preserves word boundaries.
-- Embeddings are deterministic by default to keep local development stable.
+- Training embeddings are fetched from your configured LiteLLM-compatible endpoint.
 - Prediction ranking always returns top-5 labels where available.
 - A warning is raised when the top prediction falls below the configured confidence threshold.
 - Recent analyses are stored locally in the browser for fast recall.
@@ -156,11 +159,11 @@ Please keep changes aligned with the existing project conventions:
 - Add or update tests for behavior changes
 - Keep backend/frontend/training logic in their respective layers
 - Update the conductor docs if a phase or workflow meaningfully changes
-- Favor deterministic fallbacks when introducing optional external dependencies
+- Keep provider-based embedding behavior explicit and observable
 
 ## Troubleshooting
 
-- If the backend cannot reach a real embedding provider, it falls back to deterministic embeddings.
+- If the embedding provider is unreachable, verify `LITELLM_API_BASE`, `LITELLM_MODEL`, and `LITELLM_API_KEY`.
 - If model artifacts are missing, rerun the training pipeline.
 - If the frontend fails type checking, make sure test files are excluded from the production build config as intended.
 - If commands behave differently on your machine, check `Makefile` for the canonical workflow.
