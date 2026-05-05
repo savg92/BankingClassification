@@ -26,17 +26,30 @@
 # Default shell
 SHELL := /bin/bash
 
-# Python executable (using uv venv)
-PYTHON := ./.venv/bin/python
-PIP := ./.venv/bin/pip
+
+# Python executable (cross-platform)
+ifeq ($(OS),Windows_NT)
+	PYTHON := ./.venv/Scripts/python.exe
+	PIP := ./.venv/Scripts/pip.exe
+else
+	PYTHON := ./.venv/bin/python
+	PIP := ./.venv/bin/pip
+endif
 UV := uv
 
 # Node/Bun executables
-BUN := bun
+ifeq ($(OS),Windows_NT)
+	BUN := "$(subst \,/,$(USERPROFILE))/.bun/bin/bun.exe"
+	PYTHONPATH_PREFIX := set "PYTHONPATH=$(PYTHON_ROOT)" &&
+	TRAIN_SLICE_PREFIX := set "TRAIN_SLICE=$(if $(N),$(N),500)" &&
+else
+	BUN := bun
+	PYTHONPATH_PREFIX := PYTHONPATH=$(PYTHON_ROOT)
+	TRAIN_SLICE_PREFIX := TRAIN_SLICE=$(if $(N),$(N),500)
+endif
 NODE := node
 
-# Project paths
-PYTHON_ROOT := .
+PYTHON_ROOT := $(abspath .)
 BACKEND_DIR := ./apps/backend
 FRONTEND_DIR := ./apps/frontend
 TRAINING_DIR := ./training
@@ -166,23 +179,25 @@ env-template:
 
 train:
 	@echo "$(BLUE)Running model training pipeline...$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py
+	@$(PYTHON) -m training.train
+
+
 
 train-intent:
 	@echo "$(BLUE)Running intent-only training (mteb/banking77)...$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py --target intent
+	@$(PYTHON) -m training.train --target intent
 
 train-sentiment:
 	@echo "$(BLUE)Running sentiment-only training (go_emotions)...$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py --target sentiment
+	@$(PYTHON) -m training.train --target sentiment
 
 train-slice:
 	@echo "$(BLUE)Running quick training slice (TRAIN_SLICE=${N:-500})...$(NC)"
-	@TRAIN_SLICE=${N:-500} PYTHONPATH=$(PYTHON_ROOT) $(PYTHON) training/train.py
+	@$(TRAIN_SLICE_PREFIX) $(PYTHONPATH_PREFIX) $(PYTHON) training/train.py
 
 backend-dev:
 	@echo "$(BLUE)Starting backend API (http://localhost:8000)...$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run uvicorn apps.backend.main:app --reload --host 0.0.0.0 --port 8000
+	@$(PYTHONPATH_PREFIX) $(UV) run uvicorn apps.backend.main:app --reload --host 0.0.0.0 --port 8000
 
 frontend-dev:
 	@echo "$(BLUE)Starting frontend dev server (http://localhost:5173)...$(NC)"
@@ -207,7 +222,7 @@ test: test-backend test-frontend test-e2e
 
 test-backend:
 	@echo "$(BLUE)Running backend tests (pytest)...$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run pytest -v apps/backend/tests --cov=apps/backend --cov-report=html --cov-report=term
+	@$(PYTHONPATH_PREFIX) $(UV) run pytest -v apps/backend/tests --cov=apps/backend --cov-report=html --cov-report=term
 	@echo "$(GREEN)✓ Backend tests passed$(NC)"
 	@echo "Coverage report: apps/backend/htmlcov/index.html"
 
@@ -224,7 +239,7 @@ test-e2e:
 coverage:
 	@echo "$(BLUE)Generating coverage reports...$(NC)"
 	@echo "$(YELLOW)Backend coverage:$(NC)"
-	@PYTHONPATH=$(PYTHON_ROOT) $(UV) run pytest apps/backend --cov=apps/backend --cov-report=html
+	@$(PYTHONPATH_PREFIX) $(UV) run pytest apps/backend --cov=apps/backend --cov-report=html
 	@echo "  Report: apps/backend/htmlcov/index.html"
 	@echo ""
 	@echo "$(YELLOW)Frontend coverage:$(NC)"

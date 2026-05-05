@@ -51,6 +51,81 @@ If you want the long-form version with diagrams, see `ARCHITECTURE.md`.
 - Bun for frontend dependencies and scripts
 - Optional: LiteLLM-compatible provider(s) if you want to swap in real embedding services
 
+## Windows — Setup & requirements
+
+This project runs on Windows but requires a few platform-specific tools and small workflow adjustments. Follow the steps below to prepare a Windows development machine.
+
+- Prerequisites
+  - Windows 10/11 with latest updates
+  - Python 3.13 installed and added to PATH (download from python.org)
+  - Git for Windows (Git Bash) — provides a Unix-like shell for some Makefile workflows
+  - Visual Studio Build Tools (C++ Build Tools) — required for some Python packages that build native extensions
+  - A package manager: `winget` (Windows Package Manager) or `choco` (Chocolatey) for easy installs
+
+- Install Python dependencies (PowerShell)
+
+  ```powershell
+  python -m pip install --upgrade pip
+  python -m pip install uv
+  # Create venv and install pinned deps
+  uv venv
+  uv sync --all-groups
+  ```
+
+- Install Bun (PowerShell)
+
+  ```powershell
+  powershell -c "irm bun.sh/install.ps1 | iex"
+  # Ensure %USERPROFILE%\.bun\bin is in your user PATH and restart the terminal
+  ```
+
+- Install GNU Make (recommended via winget)
+
+  ```powershell
+  winget install --id ezwinports.make -e --accept-package-agreements --accept-source-agreements
+  # or with Chocolatey (admin): choco install make -y
+  ```
+
+  After install restart your terminal and verify:
+
+  ```powershell
+  make --version
+  ```
+
+- Git Bash / Make compatibility
+  - The Makefile includes some POSIX-style env assignments (e.g. `PYTHONPATH=... command`) which may not work with Windows cmd.exe. Options:
+    - Run `make` inside Git Bash or WSL (recommended for parity with the Makefile).
+    - Install GNU Make via `winget` and add its bin directory to your Git Bash PATH (or copy `make.exe` into Git's `usr/bin`).
+    - Alternatively run backend and frontend commands directly in PowerShell (examples below).
+
+- Start services on Windows (PowerShell examples)
+  - Backend (use venv python)
+    ```powershell
+    $env:PYTHONPATH = (Resolve-Path .).Path
+    .\.venv\Scripts\python.exe -m uvicorn apps.backend.main:app --reload --host 0.0.0.0 --port 8000
+    ```
+  - Frontend
+    ```powershell
+    cd apps/frontend
+    %USERPROFILE%\.bun\bin\bun.exe install
+    %USERPROFILE%\.bun\bin\bun.exe run dev
+    ```
+
+- Troubleshooting
+  - If `bun` invokes an older npm shim (errors referencing `%APPDATA%\npm\bun.ps1`), remove the shim files:
+    ```powershell
+    Remove-Item $env:APPDATA\npm\bun.ps1 -Force -ErrorAction SilentlyContinue
+    Remove-Item $env:APPDATA\npm\bun.cmd -Force -ErrorAction SilentlyContinue
+    ```
+    Then ensure `C:\Users\<you>\.bun\bin` is in your user PATH and restart the terminal.
+  - If `make` is not found in Git Bash after installing via winget, add the winget packages bin to your `~/.bashrc`:
+    ```bash
+    echo 'export PATH="$PATH:/c/Users/<you>/AppData/Local/Microsoft/WinGet/Packages/ezwinports.make_Microsoft.Winget.Source_8wekyb3d8bbwe/bin"' >> ~/.bashrc
+    source ~/.bashrc
+    ```
+
+If you prefer, run the Makefile targets inside WSL where bash and the standard Unix tools are available; this often yields the smoothest cross-platform behavior.
+
 ## Configuration
 
 Copy `.env.example` to `.env` or edit the existing `.env` file to suit your environment.

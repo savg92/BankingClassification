@@ -16,8 +16,26 @@ interface InferenceState {
 
 const HISTORY_KEY = 'banking-classification-history';
 
+function getHistoryStorage() {
+	const storage = globalThis.localStorage;
+	if (
+		!storage ||
+		typeof storage.getItem !== 'function' ||
+		typeof storage.setItem !== 'function'
+	) {
+		return null;
+	}
+
+	return storage;
+}
+
 function persistHistory(history: AnalyzeResponse[]) {
-	localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 100)));
+	const storage = getHistoryStorage();
+	if (!storage) {
+		return;
+	}
+
+	storage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 100)));
 }
 
 export const useInferenceStore = create<InferenceState>((set, get) => ({
@@ -29,7 +47,12 @@ export const useInferenceStore = create<InferenceState>((set, get) => ({
 	setInputText: (value) => set({ inputText: value }),
 	setActiveTab: (value) => set({ activeTab: value }),
 	hydrateHistory: () => {
-		const raw = localStorage.getItem(HISTORY_KEY);
+		const storage = getHistoryStorage();
+		if (!storage) {
+			return;
+		}
+
+		const raw = storage.getItem(HISTORY_KEY);
 		if (!raw) {
 			return;
 		}
