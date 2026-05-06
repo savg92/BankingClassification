@@ -12,7 +12,7 @@ The system is organized as a small monorepo with three execution layers:
 
 1. A user enters banking text in the React dashboard.
 2. The frontend posts the text to `POST /analyze`.
-3. The backend obtains a 768-dim embedding via LiteLLM or deterministic fallback.
+3. The backend obtains a 768-dim embedding via LiteLLM.
 4. Intent and sentiment classifiers run in parallel.
 5. The backend returns the top 5 predictions for each model and warning flags.
 6. The frontend renders the results and stores recent analyses in local state.

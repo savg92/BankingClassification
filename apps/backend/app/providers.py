@@ -4,7 +4,7 @@ import logging
 from hashlib import sha256
 from typing import Protocol
 
-from banking_classification.vector import EMBEDDING_DIMENSION, embed_text
+from banking_classification.vector import EMBEDDING_DIMENSION, embed_text, normalize_embedding
 
 logger = logging.getLogger(__name__)
 
@@ -33,16 +33,18 @@ class LiteLLMEmbeddingProvider:
                 api_key=self.api_key,
             )
             data = response["data"][0]["embedding"]
-            logger.info(f"✓ Real embedding from {self.model} at {self.api_base}")
-            return [float(value) for value in data]
+            # Ensure embedding matches the expected project dimension and is normalized
+            raw = [float(value) for value in data]
+            logger.info(f"✓ Real embedding from {self.model} at {self.api_base} (original_size={len(raw)})")
+            return normalize_embedding(raw, target_dim=EMBEDDING_DIMENSION)
         except ImportError as e:
             logger.error(f"✗ LiteLLM import failed: {e}. Falling back to deterministic embeddings.")
-            return embed_text(text, dimension=EMBEDDING_DIMENSION)
+            return normalize_embedding(embed_text(text, dimension=EMBEDDING_DIMENSION), target_dim=EMBEDDING_DIMENSION)
         except Exception as e:
             logger.error(f"✗ LiteLLM embedding failed ({self.api_base}): {type(e).__name__}: {e}. Falling back to deterministic embeddings.")
-            return embed_text(text, dimension=EMBEDDING_DIMENSION)
+            return normalize_embedding(embed_text(text, dimension=EMBEDDING_DIMENSION), target_dim=EMBEDDING_DIMENSION)
 
 
 class DeterministicEmbeddingProvider:
     async def embed(self, text: str) -> list[float]:
-        return embed_text(text, dimension=EMBEDDING_DIMENSION)
+        return normalize_embedding(embed_text(text, dimension=EMBEDDING_DIMENSION), target_dim=EMBEDDING_DIMENSION)

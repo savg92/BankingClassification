@@ -17,10 +17,16 @@ from .trainer import grid_search_configurations, split_train_validation, train_c
 
 
 def _normalize_litellm_model(model: str) -> str:
-    normalized = model.strip()
-    if "/" in normalized:
-        return normalized
-    return f"openai/{normalized}"
+    """Return the model identifier to pass to LiteLLM/HTTP APIs.
+
+    Previously this auto-prefixed bare model names with `openai/`. For local
+    LM Studio usage (or provider-specific names like `text-embedding-qwen3-embedding-0.6b`)
+    we should respect the exact string the user provides in `LITELLM_MODEL`.
+
+    If callers need OpenAI-style names, include the namespace (e.g. `openai/text-embedding-3-small`) in
+    the `LITELLM_MODEL` environment variable instead of relying on auto-prefixing.
+    """
+    return model.strip()
 
 
 def _embed_texts_with_litellm(texts: list[str]) -> list[list[float]]:
